@@ -1,2 +1,74 @@
-lcCMSA-ES
+This is the code lcCMSA-ES of the supplementary material for the paper
+"A Covariance Matrix Self-Adaptation Evolution Strategy for Linear
+Constrained Optimization" by Patrick Spettel, Hans-Georg Beyer, and
+Michael Hellwig.
+
+Building
+========
+The code is developed for Octave. Therefore, no compilation is necessary
+for the m-files.
+
+But the l1 projection makes use of the `lp_solve` Linear Program solver
+[http://lpsolve.sourceforge.net/5.5/](http://lpsolve.sourceforge.net/5.5/).
+The interface to this is a mex-extension to Octave. The
+`compileMexFiles.m` file compiles it. It assumes that `lp_solve` version 5.5
+is installed into the system libraries (-llpsolve55 linker flag).
+If necessary, adjust the mex call in `compileMexFiles.m` to your needs.
+Then, issue the command
+
+    $ octave-cli compileMexFiles.m
+
+to build the mex files.
+Alternatively, instead of the `lp_solve` Linear Program solver,
+Octave's GLPK wrapper function glpk could be used. There is
+a commented line in `projectToPositiveOrthantL1.m` that shows
+how to call it. For using glpk, uncomment this line and comment
+the next one containing the call to `solveNonNegativeLpWithLpSolve`.
+
+Running
+=======
+An example of how to run the algorithm is in the `runlcCMSAES.m` script.
+It creates a Klee-Minty problem with some dimension, configures the
+lcCMSAES and runs it on the Klee-Minty problem that was created in the
+beginning.
+
+    $ cd /to/the/folder/containing/the/lcCMSAES/files
+    $ octave-cli runlcCMSAES.m
+
+Running in the BBOB COCO framework
+==================================
+In order to run the lcCMSA-ES in the BBOB COCO framework first get and build
+the BBOB COCO framework for Octave. Note that the lcCMSA-ES assumes linear
+constraints and the original BBOB COCO framework applies non-linear
+perturbations to the problems in the `bbob-constrained` suite. We provide
+an adapted version of the BBOB COCO framework in a GitHub fork.
+By default the non-linear perturbations are disabled.
+
+The command
+
+    $ git clone https://github.com/patsp/coco.git
+
+clones the repository into a folder called `coco` in the current directory.
+Our changes are in a branch called `development-sppa`.
+Issue
+
+    $ cd coco
+    $ git checkout development-sppa
+
+to change into the `coco` directory and checkout those files.
+Build the BBOB COCO framework for Octave (see the BBOB COCO
+build instructions for all the details).
+The command
+
+    $ python do.py build-octave
+
+does this and the built files are then in `code-experiments/build/matlab`.
+Copy and rename this `matlab` folder as you wish. Copy all the lcCMSAES files
+into this folder (of course you could also make the files in this new
+folder available with `addpath` for example). The command
+
+    $ octave-cli cocoExperimentlcCMSAES.m
+
+runs the lcCMSAES on the `bbob-constrained` suite. Adapt the
+`cocoExperimentlcCMSAES.m` to your needs (see the comments).
 
