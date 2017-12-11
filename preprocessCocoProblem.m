@@ -53,7 +53,7 @@ function [A, b, f] = preprocessCocoProblem(fPrime, constraintFun, lbnds, ubnds)
   % (note: this interprets numbers larger than 1e20 as infinity).
   if all(lbnds == 0) && all(ubnds >= 1e20)
     A = [W eye(KPrime, KPrime)];
-    b = [c - W * lbnds]
+    b = [c - W * lbnds];
   else
     A = [W                    eye(KPrime, KPrime),   zeros(KPrime, DPrime);
          eye(DPrime, DPrime), zeros(DPrime, KPrime), eye(DPrime, DPrime)];
