@@ -65,8 +65,8 @@ function [x, info] = lcCMSAES(f, A, b, config)
   if ~(norm(abs(A * x - b)) < 1e-6)
     warning('~(norm(abs(A * x - b)) < 1e-6');
     warning(sprintf('~(%f < %f)', norm(abs(A * x - b)), 1e-6));
-    info.hasSolution = false;
-    return;
+    %info.hasSolution = false;
+    %return;
   end
 
   baseOfNullSpace = null(A);
