@@ -49,10 +49,17 @@ function [A, b, f] = preprocessCocoProblem(fPrime, constraintFun, lbnds, ubnds)
   % The following code puts this into matrix form.
   W = Aineq;
   c = bineq;
-  A = [W                    eye(KPrime, KPrime),   zeros(KPrime, DPrime);
-       eye(DPrime, DPrime), zeros(DPrime, KPrime), eye(DPrime, DPrime)];
-  b = [c - W * lbnds;
-       ubnds - lbnds];
+  % Special case for the case that we already have standard bounds
+  % (note: this interprets numbers larger than 1e20 as infinity).
+  if all(lbnds == 0) && all(ubnds >= 1e20)
+    A = [W eye(KPrime, KPrime)];
+    b = [c - W * lbnds]
+  else
+    A = [W                    eye(KPrime, KPrime),   zeros(KPrime, DPrime);
+         eye(DPrime, DPrime), zeros(DPrime, KPrime), eye(DPrime, DPrime)];
+    b = [c - W * lbnds;
+         ubnds - lbnds];
+  end
   % Backtransformation is done by adding lbnds_i to every x'_i because
   % x_i = x'_i + lbnds_i.
   f = @(x) fPrime(x(1:DPrime) + lbnds);
