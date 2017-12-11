@@ -184,11 +184,12 @@ function [x, info] = lcCMSAES(f, A, b, config)
 
     if mod(g, covUpdate) == 0 || g == 0
       sqrtC = computeSqrtCNormalized(C, targetCConditionNumber);
-      if iscomplex(sqrtC)
-        warning('stopped because sqrtC became complex');
+      C = sqrtC * sqrtC';
+      if iscomplex(sqrtC) || any(any(isnan(sqrtC) | isinf(sqrtC))) || ...
+         iscomplex(C) || any(any(isnan(C) | isinf(C)))
+        warning('stopped because C and sqrtC became unstable');
         break;
       end
-      C = sqrtC * sqrtC';
     end
 
     % +1 because 1-based indexing
