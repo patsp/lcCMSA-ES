@@ -49,11 +49,11 @@ The command
     $ git clone https://github.com/patsp/coco.git
 
 clones the repository into a folder called `coco` in the current directory.
-Our changes are in a branch called `development-sppa`.
+Our changes are in a branch called `development-sppa-2`.
 Issue
 
     $ cd coco
-    $ git checkout development-sppa
+    $ git checkout development-sppa-2
 
 to change into the `coco` directory and checkout those files.
 Build the BBOB COCO framework for Octave (see the BBOB COCO
