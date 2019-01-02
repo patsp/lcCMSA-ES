@@ -44,6 +44,10 @@ function xProjected = projectToPositiveOrthantL2Squared(x, A, b, ...
   q = -x;
   lowerBound = zeros(dimension, 1);
   upperBound = upperBoundScalar * ones(dimension, 1);
-  [xProjected, ~, ~, ~] = qp(x0, H, q, A, b, lowerBound, upperBound);
+  %[xProjected, ~, ~, ~] = qp(x0, H, q, A, b, lowerBound, upperBound);
+  options = optimoptions('quadprog', 'Display','off');
+  [xProjected, ~, ~, ~] = quadprog(H, q, [], [], A, b, ...
+                                   lowerBound, upperBound, ...
+                                   x0, options);
 end
 

@@ -129,14 +129,14 @@ function [x, info] = lcCMSAES(f, A, b, config)
   C = eye(dimensionOfNullSpace);
   sqrtC = eye(dimensionOfNullSpace);
   g = 0;
-  do
+  while true
     info.fDynamics(end + 1) = a.f;
     info.sigmaDynamics(end + 1) = a.sigma;
 
     offsprings = cell(lambda, 1);
     fitnessesAndSigmas = zeros(lambda, 2);
     for k = 1:lambda
-      offspring.sigma = sigma * e^(tau * randn(1, 1));
+      offspring.sigma = sigma * exp(tau * randn(1, 1));
       offspring.s = sqrtC * randn(dimensionOfNullSpace, 1);
       offspring.z = offspring.sigma * B * offspring.s;
       offspring.x = x + offspring.z;
@@ -185,8 +185,8 @@ function [x, info] = lcCMSAES(f, A, b, config)
     if mod(g, covUpdate) == 0 || g == 0
       sqrtC = computeSqrtCNormalized(C, targetCConditionNumber);
       C = sqrtC * sqrtC';
-      if iscomplex(sqrtC) || any(any(isnan(sqrtC) | isinf(sqrtC))) || ...
-         iscomplex(C) || any(any(isnan(C) | isinf(C)))
+      if ~isreal(sqrtC) || any(any(isnan(sqrtC) | isinf(sqrtC))) || ...
+         ~isreal(C) || any(any(isnan(C) | isinf(C)))
         warning('stopped because C and sqrtC became unstable');
         break;
       end
@@ -217,16 +217,23 @@ function [x, info] = lcCMSAES(f, A, b, config)
     a.x = x;
     a.z = zCentroid;
     a.sigma = sigma;
+    if (a.f < aBest.f)
+        aBest = a;
+        aBestG = g + 1;
+    end
 
     g = g + 1;
-  until (g > gStop || sigma < sigmaStop || ...
-         centroidDiff < centroidDiffEpsilonAbs || ...
-         relativeCentroidDiff < centroidDiffEpsilonRel || ...
-         g - aBestG >= gLag)
+    if (g > gStop || sigma < sigmaStop || ...
+        centroidDiff < centroidDiffEpsilonAbs || ...
+        relativeCentroidDiff < centroidDiffEpsilonRel || ...
+        g - aBestG >= gLag)
+      break;
+    end
+  end
 
   info.terminationCriterionStr = '';
   info.terminationCriterion = 0;
-  if iscomplex(sqrtC)
+  if ~isreal(sqrtC)
     info.terminationCriterionStr = ['Covariance matrix became complex'];
     info.terminationCriterion = 0;
   elseif g > gStop

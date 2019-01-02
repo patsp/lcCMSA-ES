@@ -78,6 +78,8 @@ function xProjected = projectToPositiveOrthantL1(x, A, b)
   lowerBound = zeros(length(c), 1);
   upperBound = [];
   %[opt, ~, ~, ~] = glpk(c, M, y, lowerBound, upperBound);
-  opt = solveNonNegativeLpWithLpSolve(c, M, y);
+  %opt = solveNonNegativeLpWithLpSolve(c, M, y);
+  options = optimoptions('linprog', 'Display','off');
+  [opt, ~, ~, ~] = linprog(c, [], [], M, y, lowerBound, upperBound, options);
   xProjected = opt(1:dimension, 1);
 end

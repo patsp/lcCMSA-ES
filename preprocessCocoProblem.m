@@ -15,8 +15,11 @@
 % You should have received a copy of the GNU General Public License
 % along with lcCMSA-ES.  If not, see <http://www.gnu.org/licenses/>.
 
-function [A, b, f] = preprocessCocoProblem(fPrime, constraintFun, lbnds, ubnds)
-  % [A, b, f] = preprocessCocoProblem(fPrime, constraintFun, lbnds, ubnds)
+function [A, b, f] = preprocessCocoProblem(fPrime, ...
+                                           constraintFun, ...
+                                           lbnds, ubnds)
+  % [A, b, f] = preprocessCocoProblem(fPrime, constraintFun, ...
+  %                                   lbnds, ubnds)
   %    This function pre-processes a BBOB COCO bbob-constrained suite
   %    optimization problem of the form
   %        fPrime(x) -> min!
